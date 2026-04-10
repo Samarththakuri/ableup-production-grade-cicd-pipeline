@@ -1,0 +1,36 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: abelup-frontend
+  namespace: default
+  labels:
+    app: abelup-frontend
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: abelup-frontend
+  template:
+    metadata:
+      labels:
+        app: abelup-frontend
+    spec:
+      containers:
+      - name: frontend
+        image: 435958718012.dkr.ecr.us-east-1.amazonaws.com/abelup-frontend
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 80
+        resources:
+          requests:
+            memory: "64Mi"
+            cpu: "100m"
+          limits:
+            memory: "128Mi"
+            cpu: "200m"
+        readinessProbe:
+          httpGet:
+            path: /
+            port: 80
+          initialDelaySeconds: 2
+          periodSeconds: 10

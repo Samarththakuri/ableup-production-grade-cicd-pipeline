@@ -1,0 +1,15 @@
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: abelup-backend-monitor
+  namespace: default
+  labels:
+    release: prometheus-stack # Important to match with prometheus instance selector
+spec:
+  selector:
+    matchLabels:
+      app: abelup-backend
+  endpoints:
+  - port: http
+    path: /metrics
+    interval: 15s

@@ -1,0 +1,46 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: abelup-backend
+  namespace: default
+  labels:
+    app: abelup-backend
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: abelup-backend
+  template:
+    metadata:
+      labels:
+        app: abelup-backend
+    spec:
+      containers:
+      - name: backend
+        # Using a placeholder account ID and region. Usually patched by CI/CD or kustomize
+        image: 435958718012.dkr.ecr.us-east-1.amazonaws.com/abelup-backend
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 5000
+        env:
+        - name: PORT
+          value: "5000"
+        # Secret reference for Mongo DB URI
+        - name: MONGO_URI
+          valueFrom:
+            secretKeyRef:
+              name: backend-secrets
+              key: MONGO_URI
+        resources:
+          requests:
+            memory: "128Mi"
+            cpu: "250m"
+          limits:
+            memory: "256Mi"
+            cpu: "500m"
+        readinessProbe:
+          httpGet:
+            path: /
+            port: 5000
+          initialDelaySeconds: 5
+          periodSeconds: 10

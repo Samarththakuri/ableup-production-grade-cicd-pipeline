@@ -1,0 +1,70 @@
+import { Accessibility, Mail, Shield, FileText } from "lucide-react";
+import { Link, useNavigate, useLocation } from "react-router-dom";
+
+const Footer = () => {
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  const handleNavClick = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
+    e.preventDefault();
+    const [path, hash] = href.split("#");
+    if (location.pathname === "/" || location.pathname === path) {
+      const el = document.getElementById(hash);
+      el?.scrollIntoView({ behavior: "smooth" });
+    } else {
+      navigate("/");
+      setTimeout(() => {
+        const el = document.getElementById(hash);
+        el?.scrollIntoView({ behavior: "smooth" });
+      }, 100);
+    }
+  };
+
+  return (
+    <footer className="border-t bg-muted/50" role="contentinfo">
+      <div className="container py-12">
+        <div className="grid gap-8 md:grid-cols-4">
+          <div>
+            <Link to="/" className="flex items-center gap-2 text-lg font-bold text-primary">
+              <Accessibility className="h-6 w-6" aria-hidden="true" />
+              <span>AbelUp</span>
+            </Link>
+            <p className="mt-3 text-sm text-muted-foreground">
+              Empowering Persons with Disabilities through inclusive employment opportunities.
+            </p>
+          </div>
+
+          <div>
+            <h3 className="mb-3 text-sm font-semibold text-foreground">Quick Links</h3>
+            <ul className="space-y-2 text-sm">
+              <li><a href="/#about" onClick={(e) => handleNavClick(e, "/#about")} className="text-muted-foreground hover:text-primary">About</a></li>
+              <li><a href="/#how-it-works" onClick={(e) => handleNavClick(e, "/#how-it-works")} className="text-muted-foreground hover:text-primary">How It Works</a></li>
+              <li><Link to="/jobs" className="text-muted-foreground hover:text-primary">Browse Jobs</Link></li>
+            </ul>
+          </div>
+
+          <div>
+            <h3 className="mb-3 text-sm font-semibold text-foreground">Legal</h3>
+            <ul className="space-y-2 text-sm">
+              <li><a href="#" className="text-muted-foreground hover:text-primary flex items-center gap-1"><Shield className="h-3 w-3" /> Privacy Policy</a></li>
+              <li><a href="#" className="text-muted-foreground hover:text-primary flex items-center gap-1"><FileText className="h-3 w-3" /> Accessibility Statement</a></li>
+            </ul>
+          </div>
+
+          <div>
+            <h3 className="mb-3 text-sm font-semibold text-foreground">Contact</h3>
+            <a href="mailto:hello@abelup.com" className="flex items-center gap-2 text-sm text-muted-foreground hover:text-primary">
+              <Mail className="h-4 w-4" /> hello@abelup.com
+            </a>
+          </div>
+        </div>
+
+        <div className="mt-10 border-t pt-6 text-center text-sm text-muted-foreground">
+          <p>© {new Date().getFullYear()} AbelUp. Built with accessibility at its core.</p>
+        </div>
+      </div>
+    </footer>
+  );
+};
+
+export default Footer;

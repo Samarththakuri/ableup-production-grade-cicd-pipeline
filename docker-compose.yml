@@ -1,0 +1,38 @@
+version: '3.8'
+
+services:
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    ports:
+      - "5000:5000"
+    environment:
+      # Use MongoDB Atlas URI or other env vars if needed, otherwise fallbacks
+      - PORT=5000
+      - MONGO_URI=${MONGO_URI:-mongodb://mongo:27017/abelup}
+      - JWT_SECRET=${JWT_SECRET:-fallback_secret}
+    # For local DB testing if MONGO_URI is not atlas
+    depends_on:
+      - mongo
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    ports:
+      - "80:80"
+      - "5173:5173" # Usually vite dev port if running dev mode
+    depends_on:
+      - backend
+
+  # Optional local DB if you don't provide an Atlas URI locally
+  mongo:
+    image: mongo:latest
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo_data:/data/db
+
+volumes:
+  mongo_data:
